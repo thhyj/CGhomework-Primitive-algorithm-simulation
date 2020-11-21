@@ -13,6 +13,7 @@ import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
 import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
 import sun.jvm.hotspot.runtime.posix.POSIXSignals;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
 
@@ -22,13 +23,15 @@ public class DemoStage extends Stage {
     Stack<Point> pointStack;
     LinkedList<Point> pointLinkedList;
     LinkedList<Line> visitLinkedList;
+    ArrayList<Point> fillArray;
     public float touchedX, touchedY;
     public Point touchPoint;
     public Square[][] square;
     private int clickedStatus = 0;
     public Point lastPoint = new Point(-1, -1), firstPoint = new Point(-1, -1);
-    public Line lastLine;
+    public Line lastLine = new Line(-1,0,0,0);
     List list;
+    public boolean filling = false;
 
 
     ClearButton clearButton;
@@ -38,7 +41,7 @@ public class DemoStage extends Stage {
         this.demo = demo;
     }
     public void init() {
-
+        fillArray = new ArrayList<Point>();
         lineLinkedList = new LinkedList<Line>();
         pointLinkedList = new LinkedList<Point>();
         visitLinkedList = new LinkedList<Line>();
@@ -57,7 +60,7 @@ public class DemoStage extends Stage {
         addActor(clearButton);
         addActor(scanLineButton);
     }
-
+    int nowTurn;
     @Override
     public void act(float delta) {
         super.act(delta);
@@ -75,9 +78,9 @@ public class DemoStage extends Stage {
                             if(!visitLinkedList.contains(line) && line.a.y != line.b.y) {
 
                                 if(lastLine.a.x != -1 && square[i][j].isEndpoint && square[i][j].lineLinkedList.size() < 3) {
-                                 //   Point l1 = lastLine.b.minus(lastLine.a);
-                                  //  Point l2 = line.b.minus(line.a);
-                                 //   System.out.println("l1.x = " + l1.x + " l1.y = " + l1.y + " l2.x = " + l2.x + " l2.y = " + l2.y);
+                                    //   Point l1 = lastLine.b.minus(lastLine.a);
+                                    //  Point l2 = line.b.minus(line.a);
+                                    //   System.out.println("l1.x = " + l1.x + " l1.y = " + l1.y + " l2.x = " + l2.x + " l2.y = " + l2.y);
                                     if((lastLine.a.y > j || lastLine.b.y > j)&& (line.b.y > j || line.a.y > j)) {
                                         if(!pointLinkedList.contains(new Point(i, j))) {
                                             System.out.println("Point: i = " + i + " j = " + j);
@@ -121,7 +124,8 @@ public class DemoStage extends Stage {
                         else {
                             System.out.println("start = " + start + " end = " + point.x);
                             for(int i = start; i <= point.x; ++i) {
-                                square[i][j].colored = true;
+                               // square[i][j].colored = true;
+                                fillArray.add(new Point(i, j));
                             }
                             start = 0;
                         }
@@ -129,6 +133,17 @@ public class DemoStage extends Stage {
                 }
             }
             demo.scanLine = false;
+            filling = true;
+            nowTurn = 0;
+        }
+        if(filling) {
+            if(nowTurn < fillArray.size()) {
+                square[fillArray.get(nowTurn).x][fillArray.get(nowTurn).y].colored = true;
+                ++nowTurn;
+            } else {
+                filling = false;
+                fillArray.clear();
+            }
         }
     }
     protected void getClicked(int x, int y) {
