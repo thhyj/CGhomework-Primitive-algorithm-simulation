@@ -10,14 +10,18 @@ import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.scenes.scene2d.*;
 import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 
+import java.util.LinkedList;
+import java.util.Set;
+
 public class Square extends Actor {
     public int coverTimes = 0;
     public boolean isEndpoint = false;
     private DemoStage stage;
     private Sprite sprite;
-    private Texture white, black, red;
+    private Texture white, black, red, yellow;
     private BitmapFont font;
-
+    public boolean colored = false;
+    public LinkedList<Line> lineLinkedList;
     public int tx, ty;
     public Square(float x, float y, float width, float height) {
         this.tx = (int)x /16;
@@ -29,10 +33,12 @@ public class Square extends Actor {
     }
 
     public void init() {
+        lineLinkedList = new LinkedList<Line>();
         stage = (DemoStage) getStage();
         white = stage.demo.manager.get("white.png");
         black = stage.demo.manager.get("black.png");
         red = stage.demo.manager.get("red.png");
+        yellow = stage.demo.manager.get("yellow.png");
         sprite = new Sprite(white);
         sprite.setX(getX());
         sprite.setY(getY());
@@ -56,16 +62,29 @@ public class Square extends Actor {
                 coverTimes++;
                 isEndpoint = true;
                 stage.getClicked(tx, ty);
+                stage.lastPoint = new Point(tx, ty);
+                if(stage.firstPoint.equal(new Point(-1, -1)) ) {
+                    stage.firstPoint = new Point(tx, ty);
+                }
                 super.clicked(event, x, y);
             }
         });
        // square = new Texture((FileHandle) ((DemoStage)getStage()).demo.manager.get("white.png"));
     }
+
+    public void addLine(Line line) {
+        lineLinkedList.add(line);
+    }
+
     @Override
     public void act(float delta) {
         super.act(delta);
         if(coverTimes == 0) {
-            sprite.setRegion(white);
+            if(!colored) {
+                sprite.setRegion(white);
+            } else {
+                sprite.setRegion(yellow);
+            }
         } else {
             if(!isEndpoint) {
                 sprite.setRegion(black);
@@ -80,6 +99,7 @@ public class Square extends Actor {
     public void draw(Batch batch, float parentAlpha) {
         super.draw(batch, parentAlpha);
         sprite.draw(batch);
+
    //     batch.draw(square, getX(), getY(), getWidth(), getHeight());
         //font.draw(batch, "x = " + tx + " y = " + ty, getX(), getY());
 

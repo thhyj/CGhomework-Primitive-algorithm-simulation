@@ -11,11 +11,14 @@ public class Demo extends Game {
     public int squareSize = 16;
     public AssetManager manager;
     public DemoScreen demoScreen;
+    public boolean scanLine = false;
     private void loadResources() {
         manager = new AssetManager();
         manager.load("black.png", Texture.class);
         manager.load("white.png", Texture.class);
         manager.load("red.png", Texture.class);
+        manager.load("yellow.png", Texture.class);
+
         manager.finishLoading();
     }
     @Override
