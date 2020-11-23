@@ -24,6 +24,11 @@ public class DemoScreen extends ScreenAdapter {
         Gdx.input.setInputProcessor(demoStage);
     }
 
+    /**
+     * render函数，每一帧都会运行，
+     * 这里面会调用舞台的act
+     * @param delta 距离上一帧的时间
+     */
     @Override
     public void render(float delta) {
         super.render(delta);
@@ -33,7 +38,5 @@ public class DemoScreen extends ScreenAdapter {
         demoStage.act();
         demoStage.draw();
         batch.end();
-
-
     }
 }

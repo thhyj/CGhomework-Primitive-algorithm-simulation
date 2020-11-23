@@ -1,22 +1,18 @@
 package demo;
 
-import com.badlogic.gdx.Gdx;
-import com.badlogic.gdx.graphics.Color;
-import com.badlogic.gdx.graphics.Texture;
-import com.badlogic.gdx.graphics.g2d.Sprite;
+
 import com.badlogic.gdx.scenes.scene2d.Stage;
-import com.badlogic.gdx.scenes.scene2d.ui.Button;
-import com.badlogic.gdx.scenes.scene2d.ui.CheckBox;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
-import com.badlogic.gdx.scenes.scene2d.utils.Drawable;
-import com.badlogic.gdx.scenes.scene2d.utils.SpriteDrawable;
-import com.badlogic.gdx.scenes.scene2d.utils.TextureRegionDrawable;
-import sun.jvm.hotspot.runtime.posix.POSIXSignals;
+
 
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Stack;
 
+/**
+ * 舞台类,实现了程序的主要功能
+ * 屏幕被分为40 * 30的像素块
+ */
 public class DemoStage extends Stage {
     Demo demo;
     LinkedList<Line> lineLinkedList;
@@ -24,7 +20,6 @@ public class DemoStage extends Stage {
     LinkedList<Point> pointLinkedList;
     LinkedList<Line> visitLinkedList;
     ArrayList<Point> fillArray;
-    public float touchedX, touchedY;
     public Point touchPoint;
     public Square[][] square;
     private int clickedStatus = 0;
@@ -33,14 +28,26 @@ public class DemoStage extends Stage {
     List list;
     public boolean filling = false;
 
+    public ClearButton clearButton;
+    public ScanLineButton scanLineButton;
+    public SeedFillButton seedFillButton;
+    public SelectConnectButton selectConnectButton;
+    public ClearColorButton clearColorButton;
 
-    ClearButton clearButton;
-    ScanLineButton scanLineButton;
-  //  Sprite white, black, red;
+    /**
+     * 构造函数,连接舞台和根节点
+     * @param demo 程序根节点
+     */
     public DemoStage(Demo demo) {
         this.demo = demo;
     }
+
+    /**
+     * 初始化函数,
+     * 初始化各种变量，添加actors
+     */
     public void init() {
+        touchPoint = new Point(-1, -1);
         fillArray = new ArrayList<Point>();
         lineLinkedList = new LinkedList<Line>();
         pointLinkedList = new LinkedList<Point>();
@@ -56,86 +63,118 @@ public class DemoStage extends Stage {
         }
 
         clearButton = new ClearButton(demo, 0, 480, 64, 20);
-        scanLineButton = new ScanLineButton(demo, 64, 480, 64, 20);
+        scanLineButton = new ScanLineButton(demo, 64, 480, 128, 20);
+        seedFillButton = new SeedFillButton(demo, 192, 480, 128, 20);
+        selectConnectButton = new SelectConnectButton(demo, 320, 480, 96, 20);
+        clearColorButton = new ClearColorButton(demo, 416, 480, 96, 20);
         addActor(clearButton);
         addActor(scanLineButton);
+        addActor(seedFillButton);
+        addActor(selectConnectButton);
+        addActor(clearColorButton);
     }
     int nowTurn;
-    @Override
-    public void act(float delta) {
-        super.act(delta);
-        if(demo.scanLine) {
-            if(lastPoint.equal(firstPoint)) {
 
-                for(int j = 0; j < 30; ++j) {
-                    visitLinkedList.clear();
-                    pointLinkedList.clear();
-                    lastLine = new Line(-1,0,0,0);
-                    for(int i = 0; i < 40; ++i) {
-                        for(Line line : square[i][j].lineLinkedList) {
-                            System.out.println("i = " + i + " j = " + j  +" line.a.x = " + line.a.x + " line.a.y = " + line.a.y
-                                    + " line.b.x = " + line.b.x + " line.b.y = " + line.b.y );
-                            if(!visitLinkedList.contains(line) && line.a.y != line.b.y) {
+    /**
+     * 扫描线填充算法
+     */
+    public void scanLineFill() {
+        if(lastPoint.equal(firstPoint)) {
 
-                                if(lastLine.a.x != -1 && square[i][j].isEndpoint && square[i][j].lineLinkedList.size() < 3) {
-                                    //   Point l1 = lastLine.b.minus(lastLine.a);
-                                    //  Point l2 = line.b.minus(line.a);
-                                    //   System.out.println("l1.x = " + l1.x + " l1.y = " + l1.y + " l2.x = " + l2.x + " l2.y = " + l2.y);
-                                    if((lastLine.a.y > j || lastLine.b.y > j)&& (line.b.y > j || line.a.y > j)) {
-                                        if(!pointLinkedList.contains(new Point(i, j))) {
-                                            System.out.println("Point: i = " + i + " j = " + j);
-                                            pointLinkedList.add(new Point(i, j));
-                                        }
-                                    } else {
-                                        if((lastLine.a.y <= j && lastLine.b.y <= j)&& (line.b.y <= j && line.a.y <= j)) {
-                                            System.out.println("lastline.a.x = " + lastLine.a.x+ " lastLine.a.y = " + lastLine.a.y
-                                                    + " lastline.b.x = " + lastLine.b.x+ " lastLine.b.y = " + lastLine.b.y +
-                                                    " line.a.x = " +
-                                                    line.a.x + " line.a.y = " + line.a.y
-                                                    + " line.b.x = " + line.b.x + " line.b.y = " + line.b.y );
-                                            pointLinkedList.removeLast();
-                                        }
-                                    }
-                                } else {
+            for(int j = 0; j < 30; ++j) {
+                visitLinkedList.clear();
+                pointLinkedList.clear();
+                lastLine = new Line(-1,0,0,0);
+                for(int i = 0; i < 40; ++i) {
+                    for(Line line : square[i][j].lineLinkedList) {
+                        if(!visitLinkedList.contains(line) && line.a.y != line.b.y) {
+
+                            if(lastLine.a.x != -1 && square[i][j].isEndpoint && square[i][j].lineLinkedList.size() < 3) {
+                                if((lastLine.a.y > j || lastLine.b.y > j)&& (line.b.y > j || line.a.y > j)) {
                                     if(!pointLinkedList.contains(new Point(i, j))) {
-                                        System.out.println("Point: i = " + i + " j = " + j);
                                         pointLinkedList.add(new Point(i, j));
                                     }
+                                } else {
+                                    if((lastLine.a.y <= j && lastLine.b.y <= j)&& (line.b.y <= j && line.a.y <= j)
+                                            && (!pointLinkedList.isEmpty())) {
+                                        pointLinkedList.removeLast();
+                                    }
                                 }
+                            } else {
+                                if(!pointLinkedList.contains(new Point(i, j))) {
+                                    pointLinkedList.add(new Point(i, j));
+                                }
+                            }
 
-                                visitLinkedList.add(line);
-                                lastLine = line;
-                            }
-                        }
-                        /*if(visitLinkedList.size() % 2 == 1) {
-                            square[i][j].colored = true;
-                        }*/
-                       /* try {
-                            Thread.currentThread().sleep(1);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }*/
-                    }
-                    boolean draw = false;
-                    int start = 0;
-                    for(Point point:pointLinkedList) {
-                        if(start == 0)
-                            start = point.x;
-                        else {
-                            System.out.println("start = " + start + " end = " + point.x);
-                            for(int i = start; i <= point.x; ++i) {
-                               // square[i][j].colored = true;
-                                fillArray.add(new Point(i, j));
-                            }
-                            start = 0;
+                            visitLinkedList.add(line);
+                            lastLine = line;
                         }
                     }
                 }
+                boolean draw = false;
+                int start = 0;
+                for(Point point:pointLinkedList) {
+                    if(start == 0)
+                        start = point.x;
+                    else {
+                        for(int i = start; i <= point.x; ++i) {
+                            fillArray.add(new Point(i, j));
+                        }
+                        start = 0;
+                    }
+                }
             }
-            demo.scanLine = false;
-            filling = true;
-            nowTurn = 0;
         }
+        demo.scanLine = false;
+        filling = true;
+        nowTurn = 0;
+    }
+
+    /**
+     * 种子填充算法的递归部分
+     * @param x 当前所在的x
+     * @param y 当前所在的y
+     */
+    private void seedFillDFS(int x, int y) {
+        if(x < 0 || y < 0 || x >= 40 || y >= 30) return;
+        if(square[x][y].visited) return;
+        if(square[x][y].coverTimes > 0) return;
+        fillArray.add(new Point(x, y));
+        square[x][y].visited = true;
+        if(demo.eightConnect) {
+            seedFillDFS(x + 1, y + 1);
+            seedFillDFS(x - 1, y - 1);
+            seedFillDFS(x - 1, y + 1);
+            seedFillDFS(x + 1, y - 1);
+        }
+        seedFillDFS(x + 1, y);
+        seedFillDFS(x - 1, y);
+        seedFillDFS(x, y + 1);
+        seedFillDFS(x, y - 1);
+
+    }
+
+    /**
+     * 种子填充入口
+     */
+    public void seedFill() {
+        if(!touchPoint.equal(new Point(-1, -1))) {
+            seedFillDFS(touchPoint.x, touchPoint.y);
+            seedFillButton.clickedStatus = false;
+            demo.seedFill = false;
+            nowTurn = 0;
+            filling = true;
+            touchPoint = new Point(-1, -1);
+        }
+    }
+
+    /**
+     * act函数,每一帧舞台都会执行一次这个函数
+     * @param delta
+     */
+    @Override
+    public void act(float delta) {
+        super.act(delta);
         if(filling) {
             if(nowTurn < fillArray.size()) {
                 square[fillArray.get(nowTurn).x][fillArray.get(nowTurn).y].colored = true;
@@ -144,19 +183,46 @@ public class DemoStage extends Stage {
                 filling = false;
                 fillArray.clear();
             }
+            return;
         }
-    }
-    protected void getClicked(int x, int y) {
-        if(pointStack.empty()) {
-            pointStack.push(new Point(x, y));
-           // clickedStatus++;
+        if(demo.scanLine) {
+            scanLineFill();
         } else {
-            drawLine(pointStack.pop(), new Point(x, y));
-            pointStack.push(new Point(x, y));
-         //   clickedStatus = 1;
+            if(demo.seedFill) {
+                seedFill();
+            }
+        }
+
+    }
+
+    /**
+     * 当方块被点击时触发,处理点击事件
+     * @param x
+     * @param y
+     */
+    protected void getClicked(int x, int y) {
+        if(!demo.seedFill) {
+            square[x][y].coverTimes++;
+            square[x][y].isEndpoint = true;
+            if(pointStack.empty()) {
+                pointStack.push(new Point(x, y));
+               // clickedStatus++;
+            } else {
+                drawLine(pointStack.pop(), new Point(x, y));
+                pointStack.push(new Point(x, y));
+             //   clickedStatus = 1;
+            }
+        } else {
+            touchPoint.x = x;
+            touchPoint.y = y;
         }
     }
 
+    /**
+     * 画线入口
+     * @param a 起点
+     * @param b 终点
+     */
     private void drawLine(Point a, Point b) {
         Line temp = new Line(a, b);
         lineLinkedList.add(temp);
@@ -165,6 +231,12 @@ public class DemoStage extends Stage {
         bresenham(temp);
     }
 
+    /**
+     * Bresenham画线算法
+     * 8种情况的讨论，
+     * 通过视情况交换两点减少为4个if
+     * @param line
+     */
     private void bresenham(Line line) {
         Point a = new Point(line.a.x, line.a.y);
         Point b = new Point(line.b.x, line.b.y);
@@ -177,7 +249,7 @@ public class DemoStage extends Stage {
         int dx = b.x - a.x;
         int p;
         float m = (float)dy / (float)dx;
-        System.out.println("m = " + m);
+    //    System.out.println("m = " + m);
 
         if(m <= 1 && m >= 0) {
             int d2y = 2 * dy;

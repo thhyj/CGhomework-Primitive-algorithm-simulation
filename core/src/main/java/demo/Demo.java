@@ -12,6 +12,8 @@ public class Demo extends Game {
     public AssetManager manager;
     public DemoScreen demoScreen;
     public boolean scanLine = false;
+    public boolean seedFill = false;
+    public boolean eightConnect = false;
     private void loadResources() {
         manager = new AssetManager();
         manager.load("black.png", Texture.class);

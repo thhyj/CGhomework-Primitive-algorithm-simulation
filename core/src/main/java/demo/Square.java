@@ -13,6 +13,9 @@ import com.badlogic.gdx.scenes.scene2d.utils.ClickListener;
 import java.util.LinkedList;
 import java.util.Set;
 
+/**
+ * 方块类，每一个像素块作为一个actor,在demostage上act
+ */
 public class Square extends Actor {
     public int coverTimes = 0;
     public boolean isEndpoint = false;
@@ -21,6 +24,7 @@ public class Square extends Actor {
     private Texture white, black, red, yellow;
     private BitmapFont font;
     public boolean colored = false;
+    public boolean visited = false;
     public LinkedList<Line> lineLinkedList;
     public int tx, ty;
     public Square(float x, float y, float width, float height) {
@@ -46,21 +50,13 @@ public class Square extends Actor {
 
         font = new BitmapFont();
         setTouchable(Touchable.enabled);
-       /* addListener(new ClickListener(){
-            @Override
-            public boolean touchDown(InputEvent event, float x, float y, int pointer, int button) {
-                System.out.println("x = " + x + " y = " + y);
-                coverTimes++;
-                event.handle();//the Stage will stop trying to handle this event
-                return true; //the inputmultiplexer will stop trying to handle this touch
-            }
-        });*/
+
         addListener( new ClickListener() {
             @Override
             public void clicked(InputEvent event, float x, float y) {
-                System.out.println("tx = " + tx + " ty = " + ty);
-                coverTimes++;
-                isEndpoint = true;
+               // System.out.println("tx = " + tx + " ty = " + ty);
+               // coverTimes++;
+               // isEndpoint = true;
                 stage.getClicked(tx, ty);
                 stage.lastPoint = new Point(tx, ty);
                 if(stage.firstPoint.equal(new Point(-1, -1)) ) {
@@ -100,8 +96,6 @@ public class Square extends Actor {
         super.draw(batch, parentAlpha);
         sprite.draw(batch);
 
-   //     batch.draw(square, getX(), getY(), getWidth(), getHeight());
-        //font.draw(batch, "x = " + tx + " y = " + ty, getX(), getY());
 
     }
 }
