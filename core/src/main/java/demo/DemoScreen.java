@@ -39,4 +39,12 @@ public class DemoScreen extends ScreenAdapter {
         demoStage.draw();
         batch.end();
     }
+
+    @Override
+    public void resize(int width, int height) {
+      //  System.out.println("width = " + width + " height = " + height);
+        demoStage.getViewport().update(width, height);
+        demoStage.getCamera().update();
+        super.resize(width, height);
+    }
 }

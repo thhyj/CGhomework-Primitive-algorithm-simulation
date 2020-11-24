@@ -3,6 +3,7 @@ package demo;
 
 import com.badlogic.gdx.scenes.scene2d.Stage;
 import com.badlogic.gdx.scenes.scene2d.ui.List;
+import com.badlogic.gdx.utils.viewport.StretchViewport;
 
 
 import java.util.ArrayList;
@@ -39,6 +40,7 @@ public class DemoStage extends Stage {
      * @param demo 程序根节点
      */
     public DemoStage(Demo demo) {
+        super(new StretchViewport(640, 500));
         this.demo = demo;
     }
 
@@ -93,16 +95,27 @@ public class DemoStage extends Stage {
                                 if((lastLine.a.y > j || lastLine.b.y > j)&& (line.b.y > j || line.a.y > j)) {
                                     if(!pointLinkedList.contains(new Point(i, j))) {
                                         pointLinkedList.add(new Point(i, j));
+                                    //    System.out.println("out : Point(" + i + "," + j + ")");
                                     }
                                 } else {
                                     if((lastLine.a.y <= j && lastLine.b.y <= j)&& (line.b.y <= j && line.a.y <= j)
-                                            && (!pointLinkedList.isEmpty())) {
+                                            && (!pointLinkedList.isEmpty()) &&
+                                            (pointLinkedList.getLast().equal( new Point(i, j)))) {
                                         pointLinkedList.removeLast();
+                                     /*   System.out.println("lastline.a.y = " + lastLine.a.y +
+                                                " lastline.b.y = " + lastLine.b.y +
+                                                " lastline.a.x = " + lastLine.a.x +
+                                                " lastline.b.x = " + lastLine.b.x +
+                                                " line.a.y = " + line.a.y +
+                                                " line.b.y = " + line.b.y);
+                                        System.out.println("remove : Point(" + i + "," + j + ")");*/
                                     }
                                 }
                             } else {
                                 if(!pointLinkedList.contains(new Point(i, j))) {
                                     pointLinkedList.add(new Point(i, j));
+                                //    System.out.println("out : Point(" + i + "," + j + ")");
+
                                 }
                             }
 
@@ -118,6 +131,7 @@ public class DemoStage extends Stage {
                         start = point.x;
                     else {
                         for(int i = start; i <= point.x; ++i) {
+                     //       System.out.println("st = " + start + " end = " + point.x);
                             fillArray.add(new Point(i, j));
                         }
                         start = 0;

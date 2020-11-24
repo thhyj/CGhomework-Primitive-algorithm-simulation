@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Main-Class: demo.lwjgl3.Lwjgl3Launcher
+Class-Path: gdx-1.9.12.jar lwjgl-3.2.3-natives-linux-arm64.jar lwjgl-3.2
+ .3-natives-linux-arm32.jar lwjgl-openal-3.2.3-natives-macos.jar lwjgl-j
+ emalloc-3.2.3-natives-linux-arm32.jar lwjgl-openal-3.2.3-natives-linux-
+ arm64.jar lwjgl-glfw-3.2.3-natives-linux.jar lwjgl-jemalloc-3.2.3-nativ
+ es-linux-arm64.jar lwjgl-jemalloc-3.2.3-natives-macos.jar lwjgl-3.2.3-n
+ atives-macos.jar gdx-backend-lwjgl3-1.9.12.jar lwjgl-glfw-3.2.3-natives
+ -macos.jar lwjgl-glfw-3.2.3-natives-windows.jar lwjgl-opengl-3.2.3-nati
+ ves-windows-x86.jar lwjgl-jemalloc-3.2.3-natives-windows.jar lwjgl-open
+ gl-3.2.3-natives-linux-arm32.jar lwjgl-opengl-3.2.3-natives-linux-arm64
+ .jar lwjgl-openal-3.2.3-natives-windows.jar lwjgl-openal-3.2.3-natives-
+ windows-x86.jar lwjgl-openal-3.2.3.jar lwjgl-glfw-3.2.3-natives-linux-a
+ rm32.jar lwjgl-3.2.3.jar lwjgl-jemalloc-3.2.3-natives-windows-x86.jar l
+ wjgl-glfw-3.2.3.jar lwjgl-3.2.3-natives-windows.jar lwjgl-glfw-3.2.3-na
+ tives-windows-x86.jar lwjgl-openal-3.2.3-natives-linux.jar jorbis-0.0.1
+ 7.jar lwjgl-3.2.3-natives-windows-x86.jar gdx-platform-1.9.12-natives-d
+ esktop.jar lwjgl-opengl-3.2.3-natives-macos.jar lwjgl-jemalloc-3.2.3.ja
+ r lwjgl-opengl-3.2.3-natives-windows.jar jlayer-1.0.1-gdx.jar lwjgl-jem
+ alloc-3.2.3-natives-linux.jar lwjgl-openal-3.2.3-natives-linux-arm32.ja
+ r lwjgl-opengl-3.2.3.jar lwjgl-3.2.3-natives-linux.jar lwjgl-opengl-3.2
+ .3-natives-linux.jar lwjgl-glfw-3.2.3-natives-linux-arm64.jar
+

@@ -32,4 +32,9 @@ public class Demo extends Game {
         setScreen(demoScreen);
     }
 
+    @Override
+    public void resize(int width, int height) {
+        Gdx.graphics.setWindowedMode(width, height);
+        super.resize(width, height);
+    }
 }

@@ -4,7 +4,8 @@ import com.badlogic.gdx.backends.lwjgl3.Lwjgl3Application;
 import com.badlogic.gdx.backends.lwjgl3.Lwjgl3ApplicationConfiguration;
 import demo.Demo;
 
-/** Launches the desktop (LWJGL3) application. */
+/** Launches the desktop (LWJGL3) application.
+ * */
 public class Lwjgl3Launcher {
 	public static void main(String[] args) {
 		createApplication();
@@ -18,7 +19,7 @@ public class Lwjgl3Launcher {
 		Lwjgl3ApplicationConfiguration configuration = new Lwjgl3ApplicationConfiguration();
 		configuration.setTitle("DEMO");
 		configuration.setWindowedMode(640, 500);
-		configuration.setWindowIcon("libgdx128.png", "libgdx64.png", "libgdx32.png", "libgdx16.png");
+		configuration.setWindowIcon("Sanae.jpg");
 		return configuration;
 	}
 }
